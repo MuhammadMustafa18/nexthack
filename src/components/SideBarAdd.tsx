@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 import {
   Sheet,
   SheetContent,
@@ -8,6 +9,8 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -15,7 +18,11 @@ import { Input } from "@/components/ui/input";
 // import SearchBox from "./SearchBox";
 import dynamic from "next/dynamic";
 import SearchInSideBar from "./SearchInSidebar";
+import { useRouter } from "next/navigation";
+
 const SearchBox = dynamic(() => import("@/components/SearchBox"))
+
+
 interface SideBarProps {
   open: boolean;
   setIsOpen: (open: boolean) => void;
@@ -36,18 +43,59 @@ export function SideBarAdd({
     demand: "",
     contact: "",
   });
-
+  const supabase = createClient(); // <-- call the function
+  const router = useRouter();
   function handleChangeEvent(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    console.log("Property Submitted", form);
-    // TODO: Save to Supabase here
-    setIsOpen(false);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault(); // what does this do?
+    if (!mapCordinates) {
+      alert("Please select a location on the map.");
+      return;
+    }
+    const user = (await supabase.auth.getUser()).data.user;
+    
+    console.log(user)
+    if (!user) {
+      alert("You must be logged in to add a property.");
+      router.push("/login");
+      return;
+    }
+    // this is the function not the client
+    // const user = (await createClient.auth.getUser()).data.user;
+
+    const { data, error } = await supabase.from("properties").insert([
+      {
+        user_id: user.id,
+        full_address: form.full_address,
+        rooms: form.rooms ? parseInt(form.rooms) : null,
+        type: form.type,
+        demand: form.demand ? parseFloat(form.demand) : null,
+        contact: form.contact,
+        latitude: mapCordinates[0],
+        longitude: mapCordinates[1],
+      },
+    ]);
+
+    if (error) {
+      console.error("Error inserting property:", error);
+      alert("Failed to save property.");
+    } else {
+      console.log("Property inserted:", data);
+      setIsOpen(false);
+      setForm({
+        full_address: "",
+        rooms: "",
+        type: "rent",
+        demand: "",
+        contact: "",
+      });
+      setMapCoordinates(null);
+    }
   }
 
   return (

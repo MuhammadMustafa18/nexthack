@@ -39,7 +39,6 @@ export function MessageBox({
     <Card className="fixed bottom-5 left-1/2 transform -translate-x-1/2 max-w-sm p-6  shadow-lg border-gray-200 border-8">
       {/* Header with time and action icons */}
       <div className="flex items-center justify-between mb-6">
-        <span className="text-sm text-gray-600 font-medium">time</span>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             <Link className="h-4 w-4 text-gray-500" />
