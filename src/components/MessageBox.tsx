@@ -14,11 +14,14 @@ import {
   RotateCcw,
   Expand,
 } from "lucide-react";
+import RentSaleParent from "@/components/RentSaleParent";
 
 interface RadioPlayerCardProps {
   primary: string;
   secondary: string;
   thirdary: string;
+  setPrimaryText: React.Dispatch<React.SetStateAction<string>>;
+  setSecondaryText: React.Dispatch<React.SetStateAction<string>>;
   time?: string;
 }
 
@@ -26,6 +29,8 @@ export function MessageBox({
   primary,
   secondary,
   thirdary,
+  setPrimaryText,
+  setSecondaryText,
 }: RadioPlayerCardProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -52,15 +57,19 @@ export function MessageBox({
       </div>
 
       {/* Station info */}
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col items-center">
         <h2 className="text-xl font-bold text-gray-900 mb-2 leading-tight">
           {primary}
         </h2>
         <p className="text-gray-600 text-sm">{secondary}</p>
         <p className="text-gray-600 text-sm">{thirdary}</p>
+        <RentSaleParent
+          setPrimaryText={setPrimaryText}
+          setSecondaryText={setSecondaryText}
+        />
       </div>
 
-      {/* Control buttons */}
+      {/* Control buttons
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
@@ -95,7 +104,7 @@ export function MessageBox({
         <Button variant="ghost" size="sm" className="h-10 w-10 p-0">
           <Shuffle className="h-5 w-5 text-gray-700" />
         </Button>
-      </div>
+      </div> */}
     </Card>
   );
 }

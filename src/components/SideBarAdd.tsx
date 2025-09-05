@@ -12,13 +12,23 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
+// import SearchBox from "./SearchBox";
+import dynamic from "next/dynamic";
+import SearchInSideBar from "./SearchInSidebar";
+const SearchBox = dynamic(() => import("@/components/SearchBox"))
 interface SideBarProps {
   open: boolean;
   setIsOpen: (open: boolean) => void;
-  mapCordinates : [number, number] | null;
+  mapCordinates: [number, number] | null;
+  setMapCoordinates: (coords: [number, number] | null) => void;
 }
 
-export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
+export function SideBarAdd({
+  open,
+  setIsOpen,
+  mapCordinates,
+  setMapCoordinates,
+}: SideBarProps) {
   const [form, setForm] = useState({
     full_address: "",
     rooms: "",
@@ -42,7 +52,11 @@ export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
 
   return (
     <Sheet open={open} onOpenChange={setIsOpen} modal={false}>
-      <SheetContent side="left" className="w-[400px] sm:w-[500px] px-4">
+      <SheetContent
+        side="left"
+        className="w-[400px] sm:w-[500px] px-4"
+        onInteractOutside={(e) => e.preventDefault()} // 🚫 stops outside click closing
+      >
         <SheetHeader>
           <SheetTitle>Add Property</SheetTitle>
           <SheetDescription>
@@ -53,10 +67,22 @@ export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
-            <Label htmlFor="cordinates">Map Location</Label>
-            {mapCordinates}
+            <Label htmlFor="coordinates">Map Location</Label>
+            <Input
+              id="coordinates"
+              value={
+                mapCordinates
+                  ? `${mapCordinates[0].toFixed(5)}, ${mapCordinates[1].toFixed(
+                      5
+                    )}`
+                  : "Select on map"
+              }
+              readOnly
+              className="cursor-not-allowed bg-gray-100 text-gray-600"
+            />
           </div>
-
+          {/* <SearchBox/> */}
+          <SearchInSideBar setMapCoordinates={setMapCoordinates} />
           <div>
             <Label htmlFor="full_address">Full Address (optional)</Label>
             <Input
@@ -67,7 +93,6 @@ export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
               placeholder="e.g. 123 Street, City"
             />
           </div>
-
           <div>
             <Label htmlFor="rooms">Rooms</Label>
             <Input
@@ -79,7 +104,6 @@ export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
               placeholder="e.g. 3"
             />
           </div>
-
           <div>
             <Label htmlFor="type">Rent or Sale</Label>
             <select
@@ -93,7 +117,6 @@ export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
               <option value="sale">Sale</option>
             </select>
           </div>
-
           <div>
             <Label htmlFor="demand">Demand</Label>
             <Input
@@ -105,7 +128,6 @@ export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
               placeholder="e.g. 25000"
             />
           </div>
-
           <div>
             <Label htmlFor="contact">Contact</Label>
             <Input
@@ -116,7 +138,6 @@ export function SideBarAdd({ open, setIsOpen, mapCordinates }: SideBarProps) {
               placeholder="e.g. +92XXXXXXXXXX"
             />
           </div>
-
           <Button type="submit" className="w-full">
             Save Property
           </Button>

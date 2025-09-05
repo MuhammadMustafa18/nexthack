@@ -25,13 +25,13 @@ export default function RentSaleParent({
   }, []);
 
   return (
-    <div className="p-4 fixed left-1/2 transform -translate-x-1/2">
+    <div className="pt-3">
       <div className="text-center space-y-4">
         <button
           onClick={() => setIsOpen(true)}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
         >
-          Open Command Palette
+          Open Menu
         </button>
       </div>
 

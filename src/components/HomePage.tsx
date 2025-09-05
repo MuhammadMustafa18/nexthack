@@ -18,7 +18,7 @@ export default function HomePage() {
     if (primaryText === "Add Property" && !sidebarOpen) {
       setSidebarOpen(true);
     }
-  }, [primaryText, sidebarOpen]); // sidebaropen ko modify karega sidebar component
+  }, [primaryText]); // sidebaropen ko modify karega sidebar component
   return (
     <div className="relative">
       <div className="absolute z-1 right-0">
@@ -31,23 +31,33 @@ export default function HomePage() {
       </div>
       <div className="absolute z-0">
         {" "}
-        <Map setMapCoordinates={setMapCordinates}/>
+        <Map
+          mapCoordinates={mapCordinates}
+          setMapCoordinates={setMapCordinates}
+        />
       </div>
-      <div className="absolute z-1">
+      {/* <div className="absolute z-1">
         <RentSaleParent
           setPrimaryText={setPrimaryText}
           setSecondaryText={setSecondaryText}
         />
-      </div>
+      </div> */}
       <div className="absolute z-1">
         <MessageBox
           primary={primaryText}
           secondary={secondaryText}
+          setPrimaryText={setPrimaryText}
+          setSecondaryText={setSecondaryText}
           thirdary=""
         />
       </div>
       {primaryText === "Add Property" && (
-        <SideBarAdd open={sidebarOpen} setIsOpen={setSidebarOpen} mapCordinates={mapCordinates}/>
+        <SideBarAdd
+          open={sidebarOpen}
+          setIsOpen={setSidebarOpen}
+          mapCordinates={mapCordinates}
+          setMapCoordinates={setMapCordinates}
+        />
       )}
     </div>
   );
