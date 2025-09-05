@@ -1,12 +1,14 @@
 "use client"
 import LoginButton from "@/components/LoginLogoutButton";
-import Map from "@/components/Map";
+// import Map from "@/components/Map";
 import { MessageBox } from "@/components/MessageBox";
 import RentSaleParent from "@/components/RentSaleParent";
 import UserGreetText from "@/components/UserGreetText";
 import { useEffect, useState } from "react";
 import { SideBarAdd } from "./SideBarAdd";
+import dynamic from "next/dynamic";
 
+const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 export default function HomePage() {
     const [primaryText, setPrimaryText] = useState("Property Cast")
     const [secondaryText, setSecondaryText] = useState("Search and Add Properties");

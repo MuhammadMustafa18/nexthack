@@ -3,6 +3,7 @@
 import LeafletClientSetup from "@/app/LeafletClientSetup";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import LocationMarker from "./LocationMarker";
+
 interface propTypes{
   setMapCoordinates: (coords: [number,number] | null) => void
 }
