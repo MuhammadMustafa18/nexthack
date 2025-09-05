@@ -3,8 +3,10 @@
 import LeafletClientSetup from "@/app/LeafletClientSetup";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import LocationMarker from "./LocationMarker";
-
-export default function Map() {
+interface propTypes{
+  setMapCoordinates: (coords: [number,number] | null) => void
+}
+export default function Map({setMapCoordinates}: propTypes) {
   return (
     <div className="h-screen w-screen bg-[#D4DADC]">
       <LeafletClientSetup />
@@ -26,7 +28,7 @@ export default function Map() {
           attribution='&copy; <a href="https://carto.com/">CARTO</a>, &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
         />
         {/* Example marker */}
-        <LocationMarker/>
+        <LocationMarker setMapCordinates={setMapCoordinates}/>
       </MapContainer>
     </div>
   );

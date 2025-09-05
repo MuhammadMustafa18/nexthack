@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Marker, useMapEvents, Popup } from "react-leaflet";
 
-export default function LocationMarker(){
+interface propTypes {
+  // setMapCordinates: [number, number] | null; // this is for variables
+  setMapCordinates: (coords: [number, number] | null) => void;
+}
+
+export default function LocationMarker({setMapCordinates}: propTypes){
     const [position, setPosition] = useState<[number, number] | null>(null) // types and initial value
 
     useMapEvents({
@@ -9,6 +14,7 @@ export default function LocationMarker(){
             const {lat,lng} = e.latlng;
             setPosition([lat,lng])
             console.log("clicked at: ", lat,lng)
+            setMapCordinates([lat, lng]);
         }
     })
 
