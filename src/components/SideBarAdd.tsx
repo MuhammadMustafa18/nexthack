@@ -17,7 +17,9 @@ import { Input } from "@/components/ui/input";
 
 // import SearchBox from "./SearchBox";
 import dynamic from "next/dynamic";
-import SearchInSideBar from "./SearchInSidebar";
+const SearchInSideBar = dynamic(() => import("@/components/SearchInSidebar"), {
+  ssr: false,
+});
 import { useRouter } from "next/navigation";
 
 const SearchBox = dynamic(() => import("@/components/SearchBox"))
