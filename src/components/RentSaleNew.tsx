@@ -24,12 +24,12 @@ interface CommandPaletteProps {
 
 const commands = [
   {
-    id: "find",
+    id: "view",
     icon: Play,
-    title: "Find Properties",
+    title: "View Property",
     description: "Hover or click any property",
     shortcut: "Space",
-    action: () => {console.log("Find action");}, // onclick is on action, yaani code mein nahi ghusna parega
+    action: () => {console.log("View action");}, // onclick is on action, yaani code mein nahi ghusna parega
   },
   {
     id: "add",
