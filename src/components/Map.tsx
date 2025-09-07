@@ -20,6 +20,7 @@ type Property = {
   longitude: number;
   created_at: string;
   images: string[]; // <-- array of Cloudinary URLs
+  streetview_url: string
 };
 
 
@@ -93,9 +94,9 @@ export default function Map({
               click: () => {
                 // console.log("Marker clicked:", p.id);
                 setSideBarViewOpen(true);
-                alert(
-                  `Property ID: ${p.id} SidebarView: ${setSideBarViewOpen}`
-                );
+                // alert(
+                //   `Property ID: ${p.id} SidebarView: ${setSideBarViewOpen}`
+                // );
                 setSelectedProperty(p);
                 setPrimaryText("Viewing Property"); // is waja se
               },

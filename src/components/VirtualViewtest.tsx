@@ -17,8 +17,8 @@ export default function StreetView({ url }: PanoViewerProps) {
     import("photo-sphere-viewer").then(({ Viewer }) => {
       const viewer = new Viewer({
         container: containerRef.current!,
-        panorama:
-          "https://photo-sphere-viewer-data.netlify.app/assets/sphere.jpg",
+        panorama: url,
+         
         navbar: ["zoom", "fullscreen", "autorotate"],
         defaultLat: 0.3,
       });

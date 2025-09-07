@@ -21,6 +21,7 @@ type Property = {
   longitude: number;
   created_at: string;
   images: string[]; // <-- array of Cloudinary URLs
+  streetview_url: string
 };
 
 
@@ -45,11 +46,11 @@ export default function HomePage() {
     <div className="relative">
       <div className="absolute z-1 right-0">
         {" "}
-        <UserGreetText />
+        {/* <UserGreetText /> */}
       </div>
       <div className="absolute z-1 right-0">
         {" "}
-        <LoginButton />
+        {/* <LoginButton /> */}
       </div>
       <div className="absolute z-0">
         {" "}
