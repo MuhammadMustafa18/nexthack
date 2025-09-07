@@ -44,6 +44,8 @@ export function SideBarAdd({
     type: "rent",
     demand: "",
     contact: "",
+    images: [] as File[],
+    streetview_file: null as File | null
   });
   const supabase = createClient(); // <-- call the function
   const router = useRouter();
@@ -61,7 +63,7 @@ export function SideBarAdd({
     }
     const user = (await supabase.auth.getUser()).data.user;
     
-    console.log(user)
+    // console.log(user)
     if (!user) {
       alert("You must be logged in to add a property.");
       router.push("/login");
@@ -69,6 +71,42 @@ export function SideBarAdd({
     }
     // this is the function not the client
     // const user = (await createClient.auth.getUser()).data.user;
+
+
+    let imageUrls: string [] = [];
+    if(form.images){
+      for(const file of Array.from(form.images)){
+        const formdata = new FormData();
+        formdata.append("file", file);
+        formdata.append(
+          "upload_preset",
+          process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
+        );
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+          { method: "POST", body: formdata }
+          
+        );
+        const data = await res.json();
+        imageUrls.push(data.secure_url);
+      }
+    }
+
+    let streetview_url: string = "";
+    if(form.streetview_file){
+      const formData = new FormData();
+      formData.append("file", form.streetview_file);
+      formData.append(
+        "upload_preset",
+        process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
+      );
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+        { method: "POST", body: formData }
+      );
+      const data = await res.json();
+      streetview_url = data.secure_url;
+    }
 
     const { data, error } = await supabase.from("properties").insert([
       {
@@ -80,6 +118,8 @@ export function SideBarAdd({
         contact: form.contact,
         latitude: mapCordinates[0],
         longitude: mapCordinates[1],
+        images: imageUrls, // 👈 add this
+        streetview_url: streetview_url
       },
     ]);
 
@@ -95,8 +135,11 @@ export function SideBarAdd({
         type: "rent",
         demand: "",
         contact: "",
+        images: [] as File[],
+        streetview_file: null as File | null
       });
       setMapCoordinates(null);
+      alert("Added this property.");
     }
   }
 
@@ -108,11 +151,11 @@ export function SideBarAdd({
         onInteractOutside={(e) => e.preventDefault()} // 🚫 stops outside click closing
       >
         <SheetHeader>
-          <SheetTitle>Add Property</SheetTitle>
+          {/* <SheetTitle>Add Property</SheetTitle>
           <SheetDescription>
             Fill in the details below. You’ll also be able to select the
             property location on the map later.
-          </SheetDescription>
+          </SheetDescription> */}
         </SheetHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -186,6 +229,37 @@ export function SideBarAdd({
               value={form.contact}
               onChange={handleChangeEvent}
               placeholder="e.g. +92XXXXXXXXXX"
+            />
+          </div>
+          <div>
+            <Label htmlFor="images">Images</Label>
+            <Input
+              id="images"
+              name="images"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  images: e.target.files ? Array.from(e.target.files) : [],
+                })
+              }
+            />
+          </div>
+          <div>
+            <Label htmlFor="vr_view">Vr View</Label>
+            <Input
+              id="vr_view"
+              name="vr_view"
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  streetview_file: e.target.files ? e.target.files[0] : null,
+                })
+              }
             />
           </div>
           <Button type="submit" className="w-full">

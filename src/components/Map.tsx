@@ -19,6 +19,7 @@ type Property = {
   latitude: number;
   longitude: number;
   created_at: string;
+  images: string[]; // <-- array of Cloudinary URLs
 };
 
 

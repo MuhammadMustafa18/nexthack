@@ -7,6 +7,10 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import Image from "next/image";
+import StreetView from "./VirtualViewtest";
+
+
 
 type Property = {
   id: number;
@@ -19,6 +23,7 @@ type Property = {
   latitude: number;
   longitude: number;
   created_at: string;
+  images: string[]; // <-- array of Cloudinary URLs
 };
 
 type PropertySidebarProps = {
@@ -28,7 +33,7 @@ type PropertySidebarProps = {
 };
 
 export function SidebarView({ open, onOpenChange, property }: PropertySidebarProps) {
-
+  
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[400px]">
@@ -61,7 +66,23 @@ export function SidebarView({ open, onOpenChange, property }: PropertySidebarPro
               <p>
                 <b>Created:</b> {new Date(property.created_at).toLocaleString()}
               </p>
+              <p>{property.images[0]}</p>
+              <StreetView url="https://res.cloudinary.com/dmcc5sp94/image/upload/v1757224264/dxtj9vq0erruu6anomoo.jpg" />
             </div>
+            {/* Images Section */}
+
+            {property.images
+              .filter((url) => url && url.trim() !== "")
+              .map((url, idx) => (
+                <div key={idx} className="relative w-full h-32">
+                  <Image
+                    src={url}
+                    alt={`Property image ${idx + 1}`}
+                    fill
+                    className="rounded-md object-cover"
+                  />
+                </div>
+              ))}
           </>
         ) : (
           <div className="text-muted-foreground text-sm p-4">
