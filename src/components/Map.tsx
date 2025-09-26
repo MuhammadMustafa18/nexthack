@@ -1,7 +1,7 @@
 "use client";
 
 import LeafletClientSetup from "@/app/LeafletClientSetup";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
 import LocationMarker from "./LocationMarker";
 import SearchBox from "./SearchBox";
 
@@ -87,9 +87,12 @@ export default function Map({
           setMapCordinates={setMapCoordinates}
         />
         {locations.map((p) => (
-          <Marker
+          <CircleMarker
             key={p.id}
-            position={[p.latitude, p.longitude]}
+            center={[p.latitude, p.longitude]}
+            radius={3}
+            pathOptions={{color:"black", fillColor: "black", fillOpacity:0.8}}
+
             eventHandlers={{
               click: () => {
                 // console.log("Marker clicked:", p.id);
@@ -119,7 +122,7 @@ export default function Map({
               <br />
               Contact: {p.contact}
             </Popup>
-          </Marker>
+          </CircleMarker>
         ))}
       </MapContainer>
     </div>

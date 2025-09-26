@@ -15,6 +15,14 @@ export default function LeafletClientSetup() {
         iconUrl: "/leaflet/marker-icon.png",
         shadowUrl: "/leaflet/marker-shadow.png",
       });
+      // const circle = L.circleMarker([
+      //   51.505,-0.09
+      // ],{
+      //   radius: 10,
+      //   color: 'red',
+      //   fillColor: '#f03',
+      //   fillOpacity: 0.5
+      // }).addTo(map)
     });
   }, []);
 
