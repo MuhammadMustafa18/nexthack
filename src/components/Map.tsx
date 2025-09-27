@@ -90,9 +90,13 @@ export default function Map({
           <CircleMarker
             key={p.id}
             center={[p.latitude, p.longitude]}
-            radius={3}
-            pathOptions={{color:"black", fillColor: "black", fillOpacity:0.8}}
-
+            radius={5}
+            pathOptions={{
+              color: "white",
+              weight: 2,
+              fillColor: "black",
+              fillOpacity: 0.9,
+            }}
             eventHandlers={{
               click: () => {
                 // console.log("Marker clicked:", p.id);
@@ -112,15 +116,28 @@ export default function Map({
             }}
           >
             <Popup>
-              <b>{p.type}</b>
-              <br />
-              {p.full_address}
-              <br />
-              Rooms: {p.rooms}
-              <br />
-              Demand: {p.demand}
-              <br />
-              Contact: {p.contact}
+              <div className="font-sans text-sm leading-relaxed text-gray-800 min-w-[200px]">
+                <div className="text-base font-semibold text-blue-600 mb-2 capitalize">
+                  {p.type}
+                </div>
+
+                <div className="mb-1.5 text-gray-500 text-xs">
+                  📍 {p.full_address}
+                </div>
+
+                <div className="flex gap-3 mb-1.5 text-xs">
+                  <span className="text-emerald-600">
+                    🏠 <span className="font-medium">{p.rooms}</span> rooms
+                  </span>
+                  <span className="text-red-600">
+                    📊 <span className="font-medium">{p.demand}</span>
+                  </span>
+                </div>
+
+                <div className="mt-2 px-2 py-1.5 bg-gray-100 rounded text-xs text-gray-700">
+                  📞 {p.contact}
+                </div>
+              </div>
             </Popup>
           </CircleMarker>
         ))}

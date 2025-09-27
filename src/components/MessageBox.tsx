@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Heart, Share2, DollarSign, Info, Expand, X } from "lucide-react";
 import RentSaleParent from "@/components/RentSaleParent";
 import { SupportDialog } from "./RentSaleNew";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface MessageBoxProps {
   primary: string;
@@ -76,7 +77,7 @@ export function MessageBox({
 
   return (
     <Card
-      className={`fixed z-50 bg-white/95 border-8 border-gray-200 backdrop-blur-sm  shadow-2xl transition-all duration-300 ease-out ${
+      className={`fixed z-50 bg-white/95 dark:bg-black border-8 border-gray-200 backdrop-blur-sm  shadow-2xl transition-all duration-300 ease-out ${
         isMobile
           ? isExpanded
             ? "inset-6 rounded-2xl"
@@ -106,7 +107,6 @@ export function MessageBox({
             >
               <Share2 className="h-20 w-20 text-blue-600" />
             </Button>
-
             <Button
               variant="ghost"
               className="p-0 hover:bg-green-100 rounded-full"
@@ -114,14 +114,12 @@ export function MessageBox({
             >
               <DollarSign className="h-20 w-20 text-green-600" />
             </Button>
-
             <Button
               variant="ghost"
               className="p-0 hover:bg-purple-100 rounded-full"
             >
               <Info className="h-20 w-20 text-purple-600" />
             </Button>
-
             <Button
               variant="ghost"
               className="p-0 hover:bg-red-100 rounded-full"
@@ -133,13 +131,7 @@ export function MessageBox({
                 }`}
               />
             </Button>
-            <Button
-              variant="ghost"
-              className="p-0 hover:bg-red-100 rounded-full"
-              onClick={() => setIsMinimized(true)}
-            >
-              <X className="h-12 w-12 text-red-500" />
-            </Button>
+            <ThemeToggle/>
           </div>
         </div>
 
