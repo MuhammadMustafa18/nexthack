@@ -161,7 +161,7 @@ export default function Map({
           }
           attribution='&copy; <a href="https://carto.com/">CARTO</a>, &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
         />
-        {isSmall && <SearchBox setMapCoordinates={setMapCoordinates} />}
+        {/* {isSmall && <SearchBox setMapCoordinates={setMapCoordinates} />} */}
 
         <LocationMarker
           mapCoordinates={mapCoordinates}
