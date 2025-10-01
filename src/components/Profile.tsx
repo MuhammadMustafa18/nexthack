@@ -38,9 +38,8 @@ export function ProfileCard({
         >
           <Info className="h-4 w-4 text-zinc-500" />
           <div className="hidden sm:flex flex-col text-left">
-            <span className="font-semibold">About</span>
+            <span className="font-semibold hidden sm:inline ">About</span>
           </div>
-          <span className="sm:hidden font-medium">Contribute</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-sm rounded-2xl dark:bg-black p-6">

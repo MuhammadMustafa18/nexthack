@@ -16,11 +16,12 @@ export default function SearchBox({setMapCoordinates}: componentProps){
         const searchControl = GeoSearchControl({
           provider,
           style: "bar",
+          
           showMarker: true,
           autoClose: true,
           retainZoomLevel: false,
           animateZoom: true,
-          keepResult: false, // keeps the point -> how to add a message or smth here? 
+          keepResult: false, // keeps the point -> how to add a message or smth here?
         });
         map.addControl(searchControl)
         // fired a listener 
@@ -34,6 +35,6 @@ export default function SearchBox({setMapCoordinates}: componentProps){
           map.removeControl(searchControl);
           map.off("geosearch/showlocation"); // clean up listener
         }
-     })
+     }, [])
      return null; // what role basically no jsx, rather only the functionality of attaching the location to the map?
 }

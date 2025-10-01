@@ -49,7 +49,7 @@ interface propTypes {
   categoryFilter?: string | null;
   earliestEvent?: Event | null;
   setEarliestEvent: (earliestEvent: Event | null) => void;
-  setAllEvents: (events: Event[]) => void
+  setAllEvents: (events: Event[]) => void;
 }
 
 export default function Map({
@@ -64,7 +64,7 @@ export default function Map({
   categoryFilter,
   earliestEvent,
   setEarliestEvent,
-  setAllEvents
+  setAllEvents,
 }: propTypes) {
   const { resolvedTheme } = useTheme();
 
@@ -72,7 +72,14 @@ export default function Map({
 
   const [localTypeFilter, setLocalTypeFilter] = useState<string | null>(null);
   const supabase = createClient();
+  const [isSmall, setIsSmall] = useState(false);
 
+  useEffect(() => {
+    const check = () => setIsSmall(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
   useEffect(() => {
     async function fetchData() {
       const { data, error } = await supabase.from("events").select("*");
@@ -115,7 +122,6 @@ export default function Map({
     });
   }, [locations, typeFilter, localTypeFilter, categoryFilter]);
 
-
   useEffect(() => {
     if (filteredLocations.length > 0) {
       const earliest = filteredLocations.reduce((earliest, current) => {
@@ -155,8 +161,8 @@ export default function Map({
           }
           attribution='&copy; <a href="https://carto.com/">CARTO</a>, &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
         />
+        {isSmall && <SearchBox setMapCoordinates={setMapCoordinates} />}
 
-        {/* <SearchBox setMapCoordinates={setMapCoordinates} /> */}
         <LocationMarker
           mapCoordinates={mapCoordinates}
           setMapCordinates={setMapCoordinates}

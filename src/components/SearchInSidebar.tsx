@@ -59,11 +59,11 @@ export default function SearchInSideBar({setMapCoordinates}: SearchFormProps){
             placeholder="e.g. Karachi, Pakistan"
           />
           {suggestions.length > 0 && (
-            <ul className="absolute z-50 bg-white border rounded-md mt-1 max-h-40 overflow-y-auto w-full">
+            <ul className="absolute z-50 bg-white dark:bg-black dark:text-white border rounded-md mt-1 max-h-40 overflow-y-auto w-[90%]">
               {suggestions.map((s, i) => (
                 <li
                   key={i}
-                  className="px-2 py-1 cursor-pointer text-gray-700 dark:text-gray-700 hover:bg-gray-100"
+                  className="px-2 py-1 cursor-pointer text-gray-700 dark:text-white dark:hover:bg-zinc-900 hover:bg-zinc-300"
                   onClick={() => handleSelect(s)}
                 >
                   {s.label}

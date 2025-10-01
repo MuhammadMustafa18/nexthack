@@ -73,10 +73,13 @@ export function SupportDialog({setPrimaryText}: props) {
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Trigger */}
       <DialogTrigger asChild>
-        <div className="gap-4 pt-2 pb-3 px-3 shadow-md dark:bg-black rounded-xl flex flex-row items-center border dark:border-zinc-600 bg-white dark:text-white dark:hover:bg-zinc-900/50 hover:text-orange-300 cursor-pointer">
-          <Heart className="h-8 w-8 rounded-md p-2 fill-current text-orange-400 bg-orange-300/50 dark:text-orange-200 dark:bg-orange-500/50" />{" "}
-          <div className="flex flex-col">
-            <div className="font-semibold">Contribute to NextHack</div>{" "}
+        <div className="gap-4 sm:pt-2 sm:pb-3 sm:px-3 shadow-md sm:dark:bg-black rounded-xl flex flex-row items-center border dark:border-zinc-600 s:bg-white dark:text-white dark:hover:bg-zinc-900/50 hover:text-orange-300 cursor-pointer">
+          {/* Heart always visible */}
+          <Heart className="h-8 w-8 rounded-md p-2 fill-current text-orange-400 bg-orange-300/50 dark:text-orange-200 dark:bg-orange-500/50" />
+
+          {/* This text block hidden on small screens */}
+          <div className="flex-col hidden sm:flex">
+            <div className="font-semibold">Contribute to NextHack</div>
             <FlippingText
               staticText="By"
               words={["Coding", "Sharing", "Adding Events", "Collaborating"]}

@@ -462,10 +462,12 @@ function PropertyForm({
           />
         </div>
 
-        {/* <SearchInSideBar setMapCoordinates={setMapCoordinates} /> */}
-        <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-200 mb-3">
-          <strong>Note:</strong> Zoom in or out for exact spots on the map,
+        <div className="text-sm text-amber-800 bg-amber-100 p-3 rounded-md border border-amber-300 mb-4">
+          <strong>Note:</strong> If you experience issues with zooming, use the
+          search bar to locate a nearby point. You can then adjust the map as
+          needed.
         </div>
+        <SearchInSideBar setMapCoordinates={setMapCoordinates} />
       </div>
 
       {/* Property details section */}
