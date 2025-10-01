@@ -468,6 +468,11 @@ function PropertyForm({
           needed.
         </div>
         <SearchInSideBar setMapCoordinates={setMapCoordinates} />
+        <div className="text-sm text-amber-800 bg-amber-100 p-3 rounded-md border border-amber-300 mb-4">
+          <strong>Note:</strong> This field is optional and will not be stored.
+          It is only used to help search for areas near your actual location.
+          The actual data used is the map coordinates.
+        </div>
       </div>
 
       {/* Property details section */}
