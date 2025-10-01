@@ -167,8 +167,8 @@ export function RentSaleNew({
     {
       id: "view",
       icon: Play,
-      title: "View Property",
-      description: "Hover or click any property",
+      title: "View Event",
+      description: "Hover or click any event",
       shortcut: "Space",
       category: "CONTROLS",
       action: () => {
@@ -178,7 +178,7 @@ export function RentSaleNew({
     {
       id: "add",
       icon: Shuffle,
-      title: "Add Property",
+      title: "Add Event",
       description: "Click on the map and add details",
       shortcut: "R",
       category: "CONTROLS",
@@ -193,15 +193,7 @@ export function RentSaleNew({
       category: "CONTROLS",
       action: () => console.log("Locate action"),
     },
-    {
-      id: "estimate",
-      icon: Share2,
-      title: "Estimate Price by ML",
-      description: "In production",
-      shortcut: "C",
-      category: "CONTROLS",
-      action: () => console.log("Share action"),
-    },
+    
     // New navigation commands
     {
       id: "about",

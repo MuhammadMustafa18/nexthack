@@ -63,7 +63,7 @@ export default function SearchInSideBar({setMapCoordinates}: SearchFormProps){
               {suggestions.map((s, i) => (
                 <li
                   key={i}
-                  className="px-2 py-1 cursor-pointer hover:bg-gray-100"
+                  className="px-2 py-1 cursor-pointer text-gray-700 dark:text-gray-700 hover:bg-gray-100"
                   onClick={() => handleSelect(s)}
                 >
                   {s.label}

@@ -1,69 +1,61 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import Image from "next/image";
-import StreetView from "./VirtualViewtest";
 import {
+  Monitor,
   MapPin,
   Phone,
+  Tag,
   Calendar,
   Home,
-  Users,
   DollarSign,
   X,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
 
-type Property = {
+type Event = {
   id: number;
   user_id: string;
-  full_address: string | null;
-  rooms: number | null;
+  name: string;
   type: string | null;
-  demand: number | null;
-  contact: string | null;
+  category: string | null;
+  mode: string | null;
+  host: string | null;
   latitude: number;
   longitude: number;
+  start_date: string;
+  end_date: string;
+  prize_pool: string | null;
+  registration_link: string | null;
+  description: string | null;
+  image_url: string | null;
   created_at: string;
-  images: string[];
-  streetview_url: string;
+  updated_at: string;
+  source: string;
+  confirmed: boolean;
 };
 
-type PropertySidebarProps = {
-  property: Property | null;
+type EventSidebarProps = {
+  event: Event | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
-export function SidebarView({
-  open,
-  onOpenChange,
-  property,
-}: PropertySidebarProps) {
+export function SidebarView({ open, onOpenChange, event }: EventSidebarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
   const sheetRef = useRef<HTMLDivElement>(null);
 
-  const validImages =
-    property?.images?.filter((url) => url && url.trim() !== "") || [];
-
-  // Check if device is mobile
+  const validImage = event?.image_url || null;
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   useEffect(() => {
-    // Reset expansion state when sheet opens/closes
-    if (!open) {
-      setIsExpanded(false);
-    }
+    if (!open) setIsExpanded(false);
   }, [open]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -77,108 +69,49 @@ export function SidebarView({
     if (!isDragging || !isMobile) return;
     const touchY = e.touches[0].clientY;
     setCurrentY(touchY);
-
-    // Prevent default scrolling when dragging
-    if (Math.abs(touchY - startY) > 10) {
-      e.preventDefault();
-    }
+    if (Math.abs(touchY - startY) > 10) e.preventDefault();
   };
 
   const handleTouchEnd = () => {
     if (!isDragging || !isMobile) return;
     setIsDragging(false);
-
     const deltaY = currentY - startY;
-
-    // If dragged up significantly, expand
-    if (deltaY < -50 && !isExpanded) {
-      setIsExpanded(true);
-    }
-    // If dragged down significantly, collapse or close
+    if (deltaY < -50 && !isExpanded) setIsExpanded(true);
     else if (deltaY > 50) {
-      if (isExpanded) {
-        setIsExpanded(false);
-      } else {
-        onOpenChange(false);
-      }
+      if (isExpanded) setIsExpanded(false);
+      else onOpenChange(false);
     }
   };
-
-  const handleMouseStart = (e: React.MouseEvent) => {
-    if (isMobile) return;
-    setIsDragging(true);
-    setStartY(e.clientY);
-    setCurrentY(e.clientY);
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || isMobile) return;
-    setCurrentY(e.clientY);
-  };
-
-  const handleMouseEnd = () => {
-    if (!isDragging || isMobile) return;
-    setIsDragging(false);
-
-    const deltaY = currentY - startY;
-
-    if (deltaY < -50 && !isExpanded) {
-      setIsExpanded(true);
-    } else if (deltaY > 50) {
-      if (isExpanded) {
-        setIsExpanded(false);
-      } else {
-        onOpenChange(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (isDragging && !isMobile) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseEnd);
-      return () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseEnd);
-      };
-    }
-  }, [isDragging, isMobile]);
 
   if (!isMobile) {
-    // Desktop version - keep original left sidebar behavior
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent
           side="left"
-          className="w-[400px] p-0 bg-white border-r border-gray-200"
+          className="w-[400px] p-0 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800"
           style={{ boxShadow: "2px 0 8px rgba(0,0,0,0.1)" }}
         >
-          {property ? (
+          {event ? (
             <div className="flex flex-col h-full">
-              {/* Header with close button */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
+              <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-0 z-10">
                 <div>
-                  <h2 className="text-lg font-medium text-gray-900">
-                    {property.type || "Property"}
+                  <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
+                    {event.name}
                   </h2>
-                  <p className="text-sm text-gray-500">
-                    Property ID: {property.id}
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    {event.type || "Event"} • ID: {event.id}
                   </p>
                 </div>
                 <button
                   onClick={() => onOpenChange(false)}
-                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
                 >
-                  <X size={20} className="text-gray-500" />
+                  <X size={20} className="text-zinc-500 dark:text-zinc-400" />
                 </button>
               </div>
 
-              {/* Scrollable content */}
               <div className="flex-1 overflow-y-auto">
-                <PropertyContent
-                  property={property}
-                  validImages={validImages}
-                />
+                <EventContent event={event} validImage={validImage} />
               </div>
             </div>
           ) : (
@@ -189,19 +122,17 @@ export function SidebarView({
     );
   }
 
-  // Mobile version - bottom sheet
   return (
     <>
       {open && (
         <div
-          className="fixed inset-0 bg-black/50 z-40"
+          className="fixed inset-0 bg-black/50 dark:bg-black/70 z-40"
           onClick={() => onOpenChange(false)}
         />
       )}
-
       <div
         ref={sheetRef}
-        className={`fixed left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 transition-all duration-300 ease-out ${
+        className={`fixed left-0 right-0 bg-white dark:bg-zinc-900 rounded-t-2xl shadow-2xl z-50 transition-all duration-300 ease-out ${
           open
             ? isExpanded
               ? "bottom-0 top-0"
@@ -211,206 +142,194 @@ export function SidebarView({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseStart}
       >
-        {property ? (
+        {event ? (
           <div className="flex flex-col h-full">
-            {/* Drag handle and header */}
-            <div className="flex flex-col bg-white rounded-t-2xl">
-              {/* Drag handle */}
+            <div className="flex flex-col bg-white dark:bg-zinc-900 rounded-t-2xl">
               <div className="flex justify-center py-2">
-                <div className="w-10 h-1 bg-gray-300 rounded-full" />
+                <div className="w-10 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full" />
               </div>
-
-              {/* Header */}
               <div className="flex items-center justify-between px-4 pb-3">
                 <div className="flex-1">
-                  <h2 className="text-lg font-medium text-gray-900">
-                    {property.type || "Property"}
+                  <h2 className="text-lg font-medium text-zinc-900 dark:text-white">
+                    {event.name}
                   </h2>
-                  <p className="text-sm text-gray-500">
-                    Property ID: {property.id}
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    {event.type}
                   </p>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
                   >
                     {isExpanded ? (
-                      <ChevronDown size={20} className="text-gray-500" />
+                      <ChevronDown
+                        size={20}
+                        className="text-zinc-500 dark:text-zinc-400"
+                      />
                     ) : (
-                      <ChevronUp size={20} className="text-gray-500" />
+                      <ChevronUp
+                        size={20}
+                        className="text-zinc-500 dark:text-zinc-400"
+                      />
                     )}
                   </button>
                   <button
                     onClick={() => onOpenChange(false)}
-                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
                   >
-                    <X size={20} className="text-gray-500" />
+                    <X size={20} className="text-zinc-500 dark:text-zinc-400" />
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto border-t border-gray-100">
-              <PropertyContent property={property} validImages={validImages} />
+            <div className="flex-1 overflow-y-auto border-t border-zinc-100 dark:border-zinc-800">
+              <EventContent event={event} validImage={validImage} />
             </div>
           </div>
         ) : (
-          <div className="flex flex-col h-full">
-            {/* Drag handle */}
-            <div className="flex justify-center py-2">
-              <div className="w-10 h-1 bg-gray-300 rounded-full" />
-            </div>
-            <EmptyState />
-          </div>
+          <EmptyState />
         )}
       </div>
     </>
   );
 }
 
-// Extracted property content component to avoid duplication
-function PropertyContent({
-  property,
-  validImages,
+function EventContent({
+  event,
+  validImage,
 }: {
-  property: Property;
-  validImages: string[];
+  event: Event;
+  validImage: string | null;
 }) {
   return (
     <>
-      {/* Main image carousel */}
-      {validImages.length > 0 && (
-        <div className="relative">
-          <div className="relative w-full h-48">
-            <Image
-              src={validImages[0]}
-              alt="Property main image"
-              fill
-              className="object-cover"
-            />
-            {validImages.length > 1 && (
-              <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                1 / {validImages.length}
-              </div>
-            )}
-          </div>
+      {validImage && (
+        <div className="relative w-full h-48">
+          <Image
+            src={validImage}
+            alt="Event banner"
+            fill
+            className="object-cover"
+          />
         </div>
       )}
 
-      {/* Property details */}
       <div className="p-4 space-y-4">
-        {/* Address */}
         <div className="flex items-start gap-3">
-          <MapPin size={18} className="text-red-500 mt-0.5 flex-shrink-0" />
+          <MapPin
+            size={18}
+            className="text-red-500 dark:text-red-400 mt-0.5 flex-shrink-0"
+          />
           <div>
-            <p className="text-sm font-medium text-gray-900">Address</p>
-            <p className="text-sm text-gray-600">
-              {property.full_address || "Not available"}
+            <p className="text-sm font-medium text-zinc-900 dark:text-white">
+              Location
+            </p>
+            <p className="flex items-center gap-1 text-sm text-zinc-600 dark:text-zinc-300">
+              {event.mode === "Online" && (
+                <Monitor className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+              )}
+              {event.mode === "Offline" && (
+                <MapPin className="w-4 h-4 text-red-500 dark:text-red-400" />
+              )}
+              {event.mode || "Not specified"}
             </p>
           </div>
         </div>
 
-        {/* Key details in cards */}
         <div className="grid grid-cols-2 gap-3">
-          {property.rooms && (
-            <div className="bg-gray-50 p-3 rounded-lg">
+          {event.prize_pool && (
+            <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800">
               <div className="flex items-center gap-2">
-                <Users size={16} className="text-blue-600" />
-                <span className="text-xs text-gray-500">Rooms</span>
+                <DollarSign
+                  size={16}
+                  className="text-zinc-600 dark:text-zinc-400"
+                />
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  Prize Pool
+                </span>
               </div>
-              <p className="text-lg font-medium text-gray-900 mt-1">
-                {property.rooms}
+              <p className="text-lg font-medium text-zinc-900 dark:text-white mt-1">
+                {event.prize_pool}
               </p>
             </div>
           )}
-
-          {property.demand && (
-            <div className="bg-gray-50 p-3 rounded-lg">
+          {event.host && (
+            <div className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800">
               <div className="flex items-center gap-2">
-                <DollarSign size={16} className="text-green-600" />
-                <span className="text-xs text-gray-500">Demand</span>
+                <Home size={16} className="text-zinc-600 dark:text-zinc-400" />
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  Host
+                </span>
               </div>
-              <p className="text-lg font-medium text-gray-900 mt-1">
-                {property.demand}
+              <p className="text-lg font-medium text-zinc-900 dark:text-white mt-1">
+                {event.host}
               </p>
             </div>
           )}
         </div>
 
-        {/* Contact info */}
-        {property.contact && (
-          <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-            <Phone size={18} className="text-blue-600" />
-            <div>
-              <p className="text-sm font-medium text-gray-900">Contact</p>
-              <p className="text-sm text-blue-600">{property.contact}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Created date */}
         <div className="flex items-center gap-3">
-          <Calendar size={18} className="text-gray-400" />
+          <Calendar size={18} className="text-zinc-400 dark:text-zinc-500" />
           <div>
-            <p className="text-sm font-medium text-gray-900">Listed</p>
-            <p className="text-sm text-gray-600">
-              {new Date(property.created_at).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+            <p className="text-sm font-medium text-zinc-900 dark:text-white">
+              Dates - {event.confirmed ? "✅ Confirmed" : " Not Confirmed"}
+            </p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-300">
+              {new Date(event.start_date).toLocaleDateString()} →{" "}
+              {new Date(event.end_date).toLocaleDateString()}
             </p>
           </div>
         </div>
 
-        {/* Street View */}
-        {property.streetview_url && (
-          <div className="border-t pt-4 mt-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">
-              Street View
-            </h3>
-            <div className="rounded-lg overflow-hidden border">
-              <StreetView url={property.streetview_url} />
-            </div>
+        {event.registration_link && (
+          <a
+            href={event.registration_link}
+            target="_blank"
+            className="block px-4 py-2 text-white bg-black dark:bg-white dark:text-black w-max hover:underline transition-colors"
+          >
+            Register here
+          </a>
+        )}
+
+        {event.source && (
+          <div className="block px-4 text-black dark:text-white border-2 rounded-full border-black dark:border-white w-max">
+            Source: {event.source}
           </div>
         )}
 
-        {/* Additional images */}
-        {validImages.length > 1 && (
-          <div className="border-t pt-4 mt-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">
-              More Photos ({validImages.length - 1})
-            </h3>
-            <div className="grid grid-cols-2 gap-2">
-              {validImages.slice(1).map((url, idx) => (
-                <div key={idx} className="relative aspect-square">
-                  <Image
-                    src={url}
-                    alt={`Property image ${idx + 2}`}
-                    fill
-                    className="rounded-lg object-cover hover:opacity-90 transition-opacity cursor-pointer"
-                  />
-                </div>
-              ))}
+        <div className="flex flex-row items-center space-x-2">
+          <Tag className="w-5 h-5 text-black dark:text-white" />
+          {event.category && (
+            <div className="block px-4 py-1 text-orange-700 dark:text-orange-300 border-2 bg-orange-200 dark:bg-orange-900 w-max">
+              {event.category}
             </div>
+          )}
+        </div>
+
+        {event.description && (
+          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-4">
+            <h3 className="text-sm font-medium text-zinc-900 dark:text-white mb-2">
+              About this event
+            </h3>
+            <p className="text-sm text-zinc-700 dark:text-zinc-300">
+              {event.description}
+            </p>
           </div>
         )}
 
-        {/* Coordinates (for debugging - can be removed) */}
-        <div className="border-t pt-4 mt-4">
-          <details className="text-xs text-gray-500">
-            <summary className="cursor-pointer hover:text-gray-700">
+        <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-4">
+          <details className="text-xs text-zinc-500 dark:text-zinc-400">
+            <summary className="cursor-pointer hover:text-zinc-700 dark:hover:text-zinc-300">
               Technical Details
             </summary>
             <div className="mt-2 space-y-1">
-              <p>Latitude: {property.latitude}</p>
-              <p>Longitude: {property.longitude}</p>
-              <p>User ID: {property.user_id}</p>
+              <p>Latitude: {event.latitude}</p>
+              <p>Longitude: {event.longitude}</p>
+              <p>Created: {event.created_at}</p>
+              <p>Updated: {event.updated_at}</p>
             </div>
           </details>
         </div>
@@ -419,14 +338,15 @@ function PropertyContent({
   );
 }
 
-// Empty state component
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
-      <MapPin size={48} className="text-gray-300 mb-4" />
-      <p className="text-gray-500 text-lg font-medium">No property selected</p>
-      <p className="text-gray-400 text-sm mt-2">
-        Click on a marker to view property details
+      <MapPin size={48} className="text-zinc-300 dark:text-zinc-700 mb-4" />
+      <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium">
+        No event selected
+      </p>
+      <p className="text-zinc-400 dark:text-zinc-500 text-sm mt-2">
+        Click on a marker to view event details
       </p>
     </div>
   );

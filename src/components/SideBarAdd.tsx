@@ -9,9 +9,11 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+
 import {
   X,
   ChevronUp,
@@ -24,9 +26,11 @@ import {
   Camera,
   Image as ImageIcon,
   Plus,
+  Calendar,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { Switch } from "./ui/switch";
 
 const SearchInSideBar = dynamic(() => import("@/components/SearchInSidebar"), {
   ssr: false,
@@ -52,16 +56,22 @@ export function SideBarAdd({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
-  const [form, setForm] = useState({
-    full_address: "",
-    rooms: "",
-    type: "rent",
-    demand: "",
-    contact: "",
-    images: [] as File[],
-    streetview_file: null as File | null,
-  });
+ const [form, setForm] = useState({
+   name: "",
+   type: "hackathon", // hackathon, cp, conference, workshop
+   category: "",
+   mode: "online", // online, offline, hybrid
+   host: "",
+   start_date: "",
+   end_date: "",
+   prize_pool: "",
+   registration_link: "",
+   description: "",
+   images: [] as File[],
+   source: "",
+    confirmed: false, // 👈 new field (boolean)
 
+ });
   const supabase = createClient();
   const router = useRouter();
 
@@ -193,34 +203,40 @@ export function SideBarAdd({
         }
       }
 
-      let streetview_url: string = "";
-      if (form.streetview_file) {
-        const formData = new FormData();
-        formData.append("file", form.streetview_file);
-        formData.append(
-          "upload_preset",
-          process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
-        );
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
-          { method: "POST", body: formData }
-        );
-        const data = await res.json();
-        streetview_url = data.secure_url;
-      }
+      // let streetview_url: string = "";
+      // if (form.streetview_file) {
+      //   const formData = new FormData();
+      //   formData.append("file", form.streetview_file);
+      //   formData.append(
+      //     "upload_preset",
+      //     process.env.NEXT_PUBLIC_CLOUDINARY_PRESET!
+      //   );
+      //   const res = await fetch(
+      //     `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+      //     { method: "POST", body: formData }
+      //   );
+      //   const data = await res.json();
+      //   streetview_url = data.secure_url;
+      // }
 
-      const { data, error } = await supabase.from("properties").insert([
+      const { data, error } = await supabase.from("events").insert([
         {
           user_id: user.id,
-          full_address: form.full_address,
-          rooms: form.rooms ? parseInt(form.rooms) : null,
+          name: form.name,
           type: form.type,
-          demand: form.demand ? parseFloat(form.demand) : null,
-          contact: form.contact,
+          category: form.category,
+          mode: form.mode,
+          host: form.host,
           latitude: mapCordinates[0],
           longitude: mapCordinates[1],
-          images: imageUrls,
-          streetview_url: streetview_url,
+          start_date: form.start_date,
+          end_date: form.end_date,
+          prize_pool: form.prize_pool,
+          registration_link: form.registration_link,
+          description: form.description,
+          image_urls: imageUrls,
+          source: form.source,
+          confirmed: form.confirmed
         },
       ]);
 
@@ -231,20 +247,26 @@ export function SideBarAdd({
         console.log("Property inserted:", data);
         setIsOpen(false);
         setForm({
-          full_address: "",
-          rooms: "",
-          type: "rent",
-          demand: "",
-          contact: "",
+          name: "",
+          type: "hackathon",
+          category: "",
+          mode: "online",
+          host: "",
+          start_date: "",
+          end_date: "",
+          prize_pool: "",
+          registration_link: "",
+          description: "",
           images: [] as File[],
-          streetview_file: null as File | null,
+          source: "",
+          confirmed: false,
         });
         setMapCoordinates(null);
-        alert("Added this property.");
+        alert("Added this event.");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while saving the property.");
+      alert("An error occurred while saving the event.");
     } finally {
       setIsSubmitting(false);
     }
@@ -376,13 +398,19 @@ export function SideBarAdd({
 // Extracted form component to avoid duplication
 interface PropertyFormProps {
   form: {
-    full_address: string;
-    rooms: string;
-    type: string;
-    demand: string;
-    contact: string;
-    images: File[];
-    streetview_file: File | null;
+    name: string; // Event name
+    type: string; // hackathon | cp | conference | workshop
+    category: string; // AI, Web, Blockchain, etc.
+    mode: string; // online | offline | hybrid
+    host: string; // Organizer / University / Company
+    start_date: string; // yyyy-mm-dd
+    end_date: string; // yyyy-mm-dd
+    prize_pool: string; // "$5000", "Swags", etc.
+    registration_link: string; // Signup link
+    description: string; // Event details
+    images: File[]; // Event banner/images
+    source:string;
+    confirmed: boolean;
   };
   setForm: React.Dispatch<React.SetStateAction<any>>;
   handleChangeEvent: (
@@ -407,13 +435,16 @@ function PropertyForm({
     <>
       {/* Location section */}
       <div className="space-y-3 overflow-y-auto pb-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+        <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
           <MapPin size={16} className="text-red-500" />
           Location
         </div>
 
         <div>
-          <Label htmlFor="coordinates" className="sr-only">
+          <Label
+            htmlFor="coordinates"
+            className="sr-only text-gray-700 dark:text-gray-300"
+          >
             Map Location
           </Label>
           <Input
@@ -426,167 +457,197 @@ function PropertyForm({
                 : "Select location on map"
             }
             readOnly
-            className="cursor-not-allowed bg-gray-50 text-gray-600 border-gray-200"
+            className="cursor-not-allowed bg-gray-50 text-gray-600 dark:text-gray-100 border-gray-200"
             placeholder="Click on map to set location"
           />
         </div>
 
-        <SearchInSideBar setMapCoordinates={setMapCoordinates} />
+        {/* <SearchInSideBar setMapCoordinates={setMapCoordinates} /> */}
         <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-200 mb-3">
-          <strong>Note:</strong> Search for area only. For exact spots,
-          <span className="font-semibold"> click directly on the map</span>.
+          <strong>Note:</strong> Zoom in or out for exact spots on the map,
         </div>
       </div>
 
       {/* Property details section */}
+      {/* Event Details section */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-          <Home size={16} className="text-blue-600" />
-          Property Details
+        <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+          <Calendar size={16} className="text-blue-600" />
+          Event Details
         </div>
 
         <div>
-          <Label htmlFor="full_address">Full Address (optional)</Label>
+          <Label className="mb-2" htmlFor="name">
+            Event Name
+          </Label>
           <Input
-            id="full_address"
-            name="full_address"
-            value={form.full_address}
+            id="name"
+            name="name"
+            value={form.name}
             onChange={handleChangeEvent}
-            placeholder="e.g. 123 Street, City"
+            placeholder="e.g. NextHack Global"
             className="mt-1"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label htmlFor="rooms">Rooms</Label>
-            <div className="relative mt-1">
-              <Users
-                size={16}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              />
-              <Input
-                id="rooms"
-                name="rooms"
-                type="number"
-                value={form.rooms}
-                onChange={handleChangeEvent}
-                placeholder="3"
-                className="pl-10"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="type">Type</Label>
+            <Label className="mb-1" htmlFor="type">
+              Type
+            </Label>
             <select
               id="type"
               name="type"
               value={form.type}
               onChange={handleChangeEvent}
-              className="w-full mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full mt-1 rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 text-gray-700 dark:text-gray-300 dark:bg-black"
             >
-              <option value="rent">For Rent</option>
-              <option value="sale">For Sale</option>
+              <option value="hackathon">Hackathon</option>
+              <option value="cp">Competitive Programming</option>
+              <option value="conference">Conference</option>
+              <option value="workshop">Workshop</option>
+            </select>
+          </div>
+
+          <div>
+            <Label className="mb-1" htmlFor="mode">
+              Mode
+            </Label>
+            <select
+              id="mode"
+              name="mode"
+              value={form.mode}
+              onChange={handleChangeEvent}
+              className="w-full mt-1 rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 text-gray-700 dark:text-gray-300 dark:bg-black"
+            >
+              <option value="online">Online</option>
+              <option value="offline">Offline</option>
+              <option value="hybrid">Hybrid</option>
             </select>
           </div>
         </div>
-
         <div>
-          <Label htmlFor="demand">Price/Demand</Label>
-          <div className="relative mt-1">
-            <DollarSign
-              size={16}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            />
+          <Label className="mb-2" htmlFor="Category">
+            Category
+          </Label>
+          <Input
+            id="category"
+            name="category"
+            value={form.category}
+            onChange={handleChangeEvent}
+            placeholder="AI, Web, Blockchain, etc."
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label className="mb-2" htmlFor="source">
+            Source - Optional
+          </Label>
+          <Input
+            id="source"
+            name="source"
+            value={form.source}
+            onChange={handleChangeEvent}
+            placeholder="Devpost, Unstop, HackerEarth"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label className="mb-2" htmlFor="host">
+            Host
+          </Label>
+          <Input
+            id="host"
+            name="host"
+            value={form.host}
+            onChange={handleChangeEvent}
+            placeholder="Organizer / University / Company"
+            className="mt-1"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label className="mb-2" htmlFor="start_date">
+              Start Date
+            </Label>
             <Input
-              id="demand"
-              name="demand"
-              type="number"
-              value={form.demand}
+              id="start_date"
+              name="start_date"
+              type="date"
+              value={form.start_date}
               onChange={handleChangeEvent}
-              placeholder="25000"
-              className="pl-10"
+              className="mt-1"
             />
           </div>
-        </div>
-
-        <div>
-          <Label htmlFor="contact">Contact Information</Label>
-          <div className="relative mt-1">
-            <Phone
-              size={16}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            />
+          <div>
+            <Label className="mb-2" htmlFor="end_date">
+              End Date
+            </Label>
             <Input
-              id="contact"
-              name="contact"
-              value={form.contact}
+              id="end_date"
+              name="end_date"
+              type="date"
+              value={form.end_date}
               onChange={handleChangeEvent}
-              placeholder="+92XXXXXXXXXX"
-              className="pl-10"
+              className="mt-1"
             />
           </div>
         </div>
-      </div>
-
-      {/* Media section */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-          <Camera size={16} className="text-purple-600" />
-          Media
+        <div>
+          <Label className="mb-2" htmlFor="confirmed">
+            Confirmed Event?
+          </Label>
+          <Switch
+            id="confirmed"
+            name="confirmed"
+            checked={form.confirmed}
+            onCheckedChange={(checked) => {
+              setForm({ ...form, confirmed: checked });
+              console.log(form); // old
+            }}
+          />
+        </div>
+        <div>
+          <Label className="mb-2" htmlFor="prize_pool">
+            Prize Pool
+          </Label>
+          <Input
+            id="prize_pool"
+            name="prize_pool"
+            value={form.prize_pool}
+            onChange={handleChangeEvent}
+            placeholder="$5000 or Swags"
+            className="mt-1"
+          />
         </div>
 
         <div>
-          <Label htmlFor="images">Property Images</Label>
-          <div className="mt-1">
-            <Input
-              id="images"
-              name="images"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  images: e.target.files ? Array.from(e.target.files) : [],
-                })
-              }
-              className="file:mr-4  file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-          </div>
-          {form.images.length > 0 && (
-            <div className="mt-2 flex items-center gap-2 text-sm text-gray-600">
-              <ImageIcon size={14} />
-              {form.images.length} image{form.images.length > 1 ? "s" : ""}{" "}
-              selected
-            </div>
-          )}
+          <Label className="mb-2" htmlFor="registration_link">
+            Registration Link
+          </Label>
+          <Input
+            id="registration_link"
+            name="registration_link"
+            value={form.registration_link}
+            onChange={handleChangeEvent}
+            placeholder="https://example.com"
+            className="mt-1"
+          />
         </div>
 
         <div>
-          <Label htmlFor="vr_view">VR/Street View Image</Label>
-          <div className="mt-1">
-            <Input
-              id="vr_view"
-              name="vr_view"
-              type="file"
-              accept="image/*"
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  streetview_file: e.target.files ? e.target.files[0] : null,
-                })
-              }
-              className="file:mr-4 file:py-0 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
-            />
-          </div>
-          {form.streetview_file && (
-            <div className="mt-2 flex items-center gap-2 text-sm text-gray-600">
-              <Camera size={14} />
-              VR image selected: {form.streetview_file.name}
-            </div>
-          )}
+          <Label className="mb-2" htmlFor="description">
+            Description
+          </Label>
+          <Input
+            id="description"
+            name="description"
+            value={form.description}
+            onChange={handleChangeEvent}
+            placeholder="Brief details about the event..."
+            className="w-full mt-1 rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+          />
         </div>
       </div>
 
@@ -595,17 +656,17 @@ function PropertyForm({
         <Button
           type="submit"
           disabled={isSubmitting || !mapCordinates}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="w-full py-3 bg-orange-400 hover:bg-orange-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Saving Property...
+              Adding Event...
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <Plus size={18} />
-              Save Property
+              Add Event
             </div>
           )}
         </Button>
