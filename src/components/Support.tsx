@@ -42,7 +42,7 @@ export function SupportDialog({setPrimaryText}: props) {
     // redirect to GitHub repo or open form depending on tier
     if(tier?.title == "Contribute Code"){
       // redirect github
-      window.open("https://github.com/your-repo", "_blank");
+      window.open("https://github.com/MuhammadMustafa18/nexthack", "_blank");
 
     }
     if (tier?.title == "Add Events") {
@@ -73,7 +73,7 @@ export function SupportDialog({setPrimaryText}: props) {
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Trigger */}
       <DialogTrigger asChild>
-        <div className="gap-4 sm:pt-2 sm:pb-3 sm:px-3 shadow-md sm:dark:bg-black rounded-xl flex flex-row items-center border dark:border-zinc-600 sm:bg-white dark:text-white dark:hover:bg-zinc-900/50 hover:text-orange-300 cursor-pointer">
+        <div className="gap-4 sm:pt-2 sm:pb-3 px-3 shadow-md sm:dark:bg-black rounded-xl flex flex-row items-center border dark:border-zinc-600 sm:bg-white dark:text-white dark:hover:bg-zinc-900/50 hover:text-orange-300 cursor-pointer">
           {/* Heart always visible */}
           <Heart className="h-8 w-8 rounded-md p-2 fill-current text-orange-400 bg-orange-300/50 dark:text-orange-200 dark:bg-orange-500/50" />
 
