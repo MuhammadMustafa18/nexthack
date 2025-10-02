@@ -278,7 +278,7 @@ export function SideBarAdd({
       <Sheet open={open} onOpenChange={setIsOpen} modal={false}>
         <SheetContent
           side="left"
-          className="w-[400px] p-0 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800"
+          className="w-[400px] px-2 overflow-x-scroll bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800"
           onInteractOutside={(e) => e.preventDefault()}
         >
           <SheetHeader className="">

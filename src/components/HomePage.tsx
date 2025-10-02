@@ -169,10 +169,10 @@ export default function HomePage() {
         />
       </div>
       <div className="absolute top-5 right-3 z-10">
-        <SupportDialog setPrimaryText={setPrimaryText}/>
+        <SupportDialog setPrimaryText={setPrimaryText} />
       </div>
       <div className="absolute top-5 left-1/2 transform -translate-x-1/2 z-10">
-        <EventSearch events={allEvents} />
+        <EventSearch events={allEvents} setSelected={setEarliestEvent} />
       </div>
 
       <div className="absolute z-1">

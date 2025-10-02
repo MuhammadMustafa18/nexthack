@@ -33,7 +33,7 @@ type Event = {
   created_at: string;
   updated_at: string;
   source: string;
-
+  confirmed: boolean
 };
 
 // Simple helper to map type → icon
@@ -50,9 +50,9 @@ const getIcon = (type: string | null) => {
   }
 };
 
-interface props{
-    events: Event[];
-    setSelected?: (event: Event | null) => void
+interface props {
+  events: Event[];
+  setSelected?: (earliestEvent: Event | null) => void;
 }
 
 const EventSearch = ({ events, setSelected }: props) => {

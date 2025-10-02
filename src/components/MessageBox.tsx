@@ -144,7 +144,10 @@ export function MessageBox({
                   {countdown}
                 </p>
               </div>
-              <h2 className="text-sm font-semibold text-black dark:text-white mb-2">
+              <h2
+                className="text-sm font-semibold text-black dark:text-white mb-2 
+             truncate max-w-[120px]"
+              >
                 {earliest?.name}
               </h2>
             </div>
@@ -154,7 +157,7 @@ export function MessageBox({
             <p className="text-gray-600 dark:text-gray-300 text-sm my-0.5 mb-3 md:mx-1">
               {secondary}
             </p>
-            
+
             {/* Buttons below content */}
             <div className="flex items-center justify-center animate-in fade-in slide-in-from-bottom-1 duration-400 delay-200">
               <div className="flex items-center gap-4">

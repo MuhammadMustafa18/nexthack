@@ -189,10 +189,6 @@ export default function Map({
                   ? "white"
                   : "black",
               fillOpacity: 0.9,
-              className:
-                earliestEvent && p.id === earliestEvent.id
-                  ? "pulse-marker"
-                  : "", // Add this line
             }}
             eventHandlers={{
               click: () => {
