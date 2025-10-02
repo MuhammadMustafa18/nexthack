@@ -140,7 +140,7 @@ export function MessageBox({
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex flex-row  items-baseline justify-between">
               <div className="animate-in mx-1 my-1 mb-3 fade-in slide-in-from-bottom-1 duration-500 delay-100">
-                <p className="text-sm  bg-orange-700 py-1 px-3 rounded-sm font-semibold text-black dark:text-white animate-pulse">
+                <p className="text-sm  bg-orange-700 dark:bg-orange-400 py-1 px-3 rounded-sm font-semibold text-white dark:text-black animate-pulse">
                   {countdown}
                 </p>
               </div>

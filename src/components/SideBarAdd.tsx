@@ -278,13 +278,13 @@ export function SideBarAdd({
       <Sheet open={open} onOpenChange={setIsOpen} modal={false}>
         <SheetContent
           side="left"
-          className="w-[400px] sm:w-[500px] h-full overflow-y-auto px-4"
+          className="w-[400px] p-0 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800"
           onInteractOutside={(e) => e.preventDefault()}
         >
-          <SheetHeader>
+          <SheetHeader className="">
             <SheetTitle className="flex items-center gap-2">
               <Plus size={20} />
-              Add Property
+              Add Event
             </SheetTitle>
             <SheetDescription>
               Fill in the details below and select the location on the map.
@@ -318,7 +318,7 @@ export function SideBarAdd({
 
       <div
         ref={sheetRef}
-        className={`fixed left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 transition-all duration-300 ease-out ${
+        className={`fixed left-0 right-0 bg-white dark:bg-black rounded-t-2xl shadow-2xl z-50 transition-all duration-300 ease-out ${
           open
             ? isExpanded
               ? "bottom-0 top-0"
@@ -466,6 +466,11 @@ function PropertyForm({
           <strong>Note:</strong> If you experience issues with zooming, use the
           search bar to locate a nearby point. You can then adjust the map as
           needed.
+        </div>
+        <div className="w-full sm:hidden max-w-md mx-auto mb-4 p-3 text-sm text-blue-800 bg-blue-50 border border-blue-200 rounded-md">
+          <strong>Note:</strong> On mobile devices, please select your location
+          by closing the form first and then reopening it. Your information will
+          be retained.
         </div>
         <SearchInSideBar setMapCoordinates={setMapCoordinates} />
         <div className="text-sm text-amber-800 bg-amber-100 p-3 rounded-md border border-amber-300 mb-4">
